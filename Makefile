@@ -1,3 +1,6 @@
+prepare:
+	@docker build --target base .
+
 test:
 	@docker build --target unit-test .
 
