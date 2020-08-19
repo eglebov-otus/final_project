@@ -1,0 +1,4 @@
+app:
+  environment: "dev"
+  preview_cache_dir: "./cache/"
+  preview_cache_size: 3

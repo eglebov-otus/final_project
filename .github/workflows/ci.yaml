@@ -1,0 +1,19 @@
+name: CI
+
+on: [push]
+
+jobs:
+  ci:
+    name: CI
+    runs-on: ubuntu-latest
+    env:
+      DOCKER_BUILDKIT: "1"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Run linter
+        run: make lint
+      - name: Run unit tests
+        run: make test
+      - name: Build binary
+        run: make build
