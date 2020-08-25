@@ -35,7 +35,7 @@ func (m *MockPreviewRepository) EXPECT() *MockPreviewRepositoryMockRecorder {
 }
 
 // Add mocks base method
-func (m *MockPreviewRepository) Add(arg0 domain.ImageId, arg1 image.Image) (bool, error) {
+func (m *MockPreviewRepository) Add(arg0 domain.ImageID, arg1 image.Image) (bool, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Add", arg0, arg1)
 	ret0, _ := ret[0].(bool)
@@ -50,7 +50,7 @@ func (mr *MockPreviewRepositoryMockRecorder) Add(arg0, arg1 interface{}) *gomock
 }
 
 // FindOne mocks base method
-func (m *MockPreviewRepository) FindOne(arg0 domain.ImageId) (image.Image, error) {
+func (m *MockPreviewRepository) FindOne(arg0 domain.ImageID) (image.Image, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FindOne", arg0)
 	ret0, _ := ret[0].(image.Image)

@@ -1,5 +1,3 @@
-# syntax = docker/dockerfile:1-experimental
-
 FROM golang:1.14-alpine AS base
 WORKDIR /src
 ENV CGO_ENABLED=0
@@ -10,10 +8,10 @@ FROM golangci/golangci-lint:latest-alpine AS lint-base
 
 FROM base AS lint
 COPY --from=lint-base /usr/bin/golangci-lint /usr/bin/golangci-lint
-RUN golangci-lint run --timeout 10m0s ./...
+RUN golangci-lint run ./...
 
 FROM base AS unit-test
-RUN go test -v -race -count 100 ./...
+RUN go test -v ./...
 
 FROM base AS build
 ARG TARGETOS

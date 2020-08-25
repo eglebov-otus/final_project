@@ -1,9 +1,8 @@
-package preview_repository
+package repository
 
 import (
 	"container/list"
 	"fmt"
-	"go.uber.org/zap"
 	"image"
 	"image-previewer/internal/application/handlers"
 	"image-previewer/internal/domain"
@@ -11,17 +10,19 @@ import (
 	"os"
 	"sync"
 	"time"
+
+	"go.uber.org/zap"
 )
 
-type fileStorage struct {
+type FileStorage struct {
 	cacheDir string
 	capacity int
-	cache list.List
-	items map[domain.ImageId]*list.Element
-	mux sync.Mutex
+	cache    list.List
+	items    map[domain.ImageID]*list.Element
+	mux      sync.Mutex
 }
 
-func (r *fileStorage) FindOne(id domain.ImageId) (image.Image, error) {
+func (r *FileStorage) FindOne(id domain.ImageID) (image.Image, error) {
 	r.mux.Lock()
 	defer r.mux.Unlock()
 
@@ -38,7 +39,6 @@ func (r *fileStorage) FindOne(id domain.ImageId) (image.Image, error) {
 	r.cache.MoveToFront(element)
 
 	img, err := r.loadPreview(id)
-
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func (r *fileStorage) FindOne(id domain.ImageId) (image.Image, error) {
 	return img, nil
 }
 
-func (r *fileStorage) Add(id domain.ImageId, img image.Image) (bool, error) {
+func (r *FileStorage) Add(id domain.ImageID, img image.Image) (bool, error) {
 	r.mux.Lock()
 	defer r.mux.Unlock()
 
@@ -69,14 +69,14 @@ func (r *fileStorage) Add(id domain.ImageId, img image.Image) (bool, error) {
 		zap.S().Debugf("cache capacity limit exceed, removing last item")
 
 		lastItem := r.cache.Back()
-		lastItemId := lastItem.Value.(domain.ImageId)
+		lastItemID := lastItem.Value.(domain.ImageID)
 
-		if err := r.removePreview(lastItemId); err != nil {
+		if err := r.removePreview(lastItemID); err != nil {
 			return false, err
 		}
 
 		r.cache.Remove(lastItem)
-		delete(r.items, lastItemId)
+		delete(r.items, lastItemID)
 	}
 
 	zap.S().Debugf("new item, saving and pushing to front")
@@ -91,15 +91,14 @@ func (r *fileStorage) Add(id domain.ImageId, img image.Image) (bool, error) {
 	return false, nil
 }
 
-func (r *fileStorage) Len() int {
+func (r *FileStorage) Len() int {
 	return r.cache.Len()
 }
 
-func (r *fileStorage) savePreview(id domain.ImageId, img image.Image) error {
-	path := r.pathById(id)
+func (r *FileStorage) savePreview(id domain.ImageID, img image.Image) error {
+	path := r.pathByID(id)
 
 	out, err := os.Create(path)
-
 	if err != nil {
 		return fmt.Errorf("failed to create file %s: %s", path, err)
 	}
@@ -113,11 +112,10 @@ func (r *fileStorage) savePreview(id domain.ImageId, img image.Image) error {
 	return nil
 }
 
-func (r *fileStorage) loadPreview(id domain.ImageId) (image.Image, error) {
-	path := r.pathById(id)
+func (r *FileStorage) loadPreview(id domain.ImageID) (image.Image, error) {
+	path := r.pathByID(id)
 
 	file, err := os.Open(path)
-
 	if err != nil {
 		return nil, fmt.Errorf("failed to open file %s: %s", path, err)
 	}
@@ -125,7 +123,6 @@ func (r *fileStorage) loadPreview(id domain.ImageId) (image.Image, error) {
 	defer file.Close()
 
 	img, err := jpeg.Decode(file)
-
 	if err != nil {
 		return nil, fmt.Errorf("failed to decode file %s: %s", path, err)
 	}
@@ -133,8 +130,8 @@ func (r *fileStorage) loadPreview(id domain.ImageId) (image.Image, error) {
 	return img, nil
 }
 
-func (r *fileStorage) removePreview(id domain.ImageId) error {
-	path := r.pathById(id)
+func (r *FileStorage) removePreview(id domain.ImageID) error {
+	path := r.pathByID(id)
 
 	if err := os.Remove(path); err != nil {
 		return fmt.Errorf("failed to remove file %s: %s", path, err)
@@ -143,8 +140,8 @@ func (r *fileStorage) removePreview(id domain.ImageId) error {
 	return nil
 }
 
-func (r *fileStorage) touchPreview(id domain.ImageId) error {
-	path := r.pathById(id)
+func (r *FileStorage) touchPreview(id domain.ImageID) error {
+	path := r.pathByID(id)
 
 	if err := os.Chtimes(path, time.Now(), time.Now()); err != nil {
 		return fmt.Errorf("failed to touch file %s: %s", path, err)
@@ -153,14 +150,14 @@ func (r *fileStorage) touchPreview(id domain.ImageId) error {
 	return nil
 }
 
-func (r *fileStorage) pathById(id domain.ImageId) string {
+func (r *FileStorage) pathByID(id domain.ImageID) string {
 	return r.cacheDir + string(id)
 }
 
-func NewFileStorage(cacheDir string, capacity int) *fileStorage {
-	return &fileStorage{
+func NewFileStorage(cacheDir string, capacity int) *FileStorage {
+	return &FileStorage{
 		cacheDir: cacheDir,
 		capacity: capacity,
-		items: make(map[domain.ImageId]*list.Element),
+		items:    make(map[domain.ImageID]*list.Element),
 	}
 }

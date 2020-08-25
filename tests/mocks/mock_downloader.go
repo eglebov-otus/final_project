@@ -7,7 +7,7 @@ package mocks
 import (
 	gomock "github.com/golang/mock/gomock"
 	image "image"
-	valueObjects "image-previewer/internal/domain/valueObjects"
+	dto "image-previewer/internal/domain/dto"
 	reflect "reflect"
 )
 
@@ -35,7 +35,7 @@ func (m *MockDownloader) EXPECT() *MockDownloaderMockRecorder {
 }
 
 // Download mocks base method
-func (m *MockDownloader) Download(arg0 string, arg1 valueObjects.ImageDimensions) (image.Image, error) {
+func (m *MockDownloader) Download(arg0 string, arg1 dto.ImageDimensions) (image.Image, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Download", arg0, arg1)
 	ret0, _ := ret[0].(image.Image)

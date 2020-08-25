@@ -3,15 +3,16 @@ package main
 import (
 	"errors"
 	"fmt"
+	"image-previewer/internal"
+
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
-	"image-previewer/internal"
 )
 
 const (
 	EnvDevelopment = "dev"
-	EnvProduction = "prod"
+	EnvProduction  = "prod"
 )
 
 func main() {

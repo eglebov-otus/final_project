@@ -2,17 +2,19 @@ package downloader
 
 import (
 	"bytes"
-	"github.com/golang/mock/gomock"
-	"github.com/stretchr/testify/require"
-	"image-previewer/internal/domain/valueObjects"
+	"image-previewer/internal/domain/dto"
 	"image-previewer/tests/mocks"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"testing"
+
+	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/require"
 )
 
 //go:generate mockgen -destination=../../../tests/mocks/mock_http_client.go -package=mocks image-previewer/internal/infrastructure/downloader Client
+//nolint:funlen
 func TestHttpDownloader_Download(t *testing.T) {
 	ctrl := gomock.NewController(t)
 
@@ -23,13 +25,13 @@ func TestHttpDownloader_Download(t *testing.T) {
 			Get(gomock.Any()).
 			Return(&http.Response{
 				StatusCode: http.StatusNotFound,
-				Body: ioutil.NopCloser(bytes.NewReader(nil)),
+				Body:       ioutil.NopCloser(bytes.NewReader(nil)),
 			}, nil)
 
-		img, err := NewHttpDownloader(client).Download(
+		img, err := NewHTTPDownloader(client).Download(
 			"http://yandex.ru/test.jpg",
-			valueObjects.ImageDimensions{
-				Width: 0,
+			dto.ImageDimensions{
+				Width:  0,
 				Height: 0,
 			},
 		)
@@ -47,13 +49,13 @@ func TestHttpDownloader_Download(t *testing.T) {
 			Get(gomock.Any()).
 			Return(&http.Response{
 				StatusCode: http.StatusOK,
-				Body: ioutil.NopCloser(testFile),
+				Body:       ioutil.NopCloser(testFile),
 			}, nil)
 
-		img, err := NewHttpDownloader(client).Download(
+		img, err := NewHTTPDownloader(client).Download(
 			"http://yandex.ru/test.jpg",
-			valueObjects.ImageDimensions{
-				Width: 0,
+			dto.ImageDimensions{
+				Width:  0,
 				Height: 0,
 			},
 		)
@@ -71,13 +73,13 @@ func TestHttpDownloader_Download(t *testing.T) {
 			Get(gomock.Any()).
 			Return(&http.Response{
 				StatusCode: http.StatusOK,
-				Body: ioutil.NopCloser(testFile),
+				Body:       ioutil.NopCloser(testFile),
 			}, nil)
 
-		img, err := NewHttpDownloader(client).Download(
+		img, err := NewHTTPDownloader(client).Download(
 			"http://yandex.ru/test.jpg",
-			valueObjects.ImageDimensions{
-				Width: 10000,
+			dto.ImageDimensions{
+				Width:  10000,
 				Height: 20000,
 			},
 		)
@@ -95,13 +97,13 @@ func TestHttpDownloader_Download(t *testing.T) {
 			Get(gomock.Any()).
 			Return(&http.Response{
 				StatusCode: http.StatusOK,
-				Body: ioutil.NopCloser(testFile),
+				Body:       ioutil.NopCloser(testFile),
 			}, nil)
 
-		img, err := NewHttpDownloader(client).Download(
+		img, err := NewHTTPDownloader(client).Download(
 			"http://yandex.ru/test.jpg",
-			valueObjects.ImageDimensions{
-				Width: 200,
+			dto.ImageDimensions{
+				Width:  200,
 				Height: 200,
 			},
 		)

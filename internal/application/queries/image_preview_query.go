@@ -1,8 +1,11 @@
 package queries
 
-import "image-previewer/internal/domain/valueObjects"
+import "image-previewer/internal/domain/dto"
+
+type RequestHeaders map[string][]string
 
 type ImagePreviewQuery struct {
-	Url string
-	Dimensions valueObjects.ImageDimensions
+	URL        string
+	Headers    RequestHeaders
+	Dimensions dto.ImageDimensions
 }

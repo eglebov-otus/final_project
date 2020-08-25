@@ -1,23 +1,25 @@
 package infrastructure
 
+//nolint:gosec
 import (
 	"crypto/md5"
 	"encoding/hex"
 	"fmt"
 	"image-previewer/internal/domain"
-	"image-previewer/internal/domain/valueObjects"
+	"image-previewer/internal/domain/dto"
 )
 
-type imageIdResolver struct {
+type ImageIDResolver struct {
 }
 
-func (r *imageIdResolver) ResolveImageId(url string, dim valueObjects.ImageDimensions) domain.ImageId  {
+func (r *ImageIDResolver) ResolveImageID(url string, dim dto.ImageDimensions) domain.ImageID {
+	//nolint:gosec
 	hash := md5.Sum([]byte(url))
-	imageId := fmt.Sprintf("%s_%dx%d", hex.EncodeToString(hash[:]), dim.Width, dim.Height)
+	imageID := fmt.Sprintf("%s_%dx%d", hex.EncodeToString(hash[:]), dim.Width, dim.Height)
 
-	return domain.ImageId(imageId)
+	return domain.ImageID(imageID)
 }
 
-func NewImageIdResolver() *imageIdResolver {
-	return &imageIdResolver{}
+func NewImageIDResolver() *ImageIDResolver {
+	return &ImageIDResolver{}
 }

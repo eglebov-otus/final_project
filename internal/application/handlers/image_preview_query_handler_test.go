@@ -1,35 +1,37 @@
 package handlers
 
 import (
-	"github.com/golang/mock/gomock"
-	"github.com/stretchr/testify/require"
 	"image"
 	"image-previewer/internal/application/queries"
 	"image-previewer/internal/domain"
-	"image-previewer/internal/domain/valueObjects"
+	"image-previewer/internal/domain/dto"
 	"image-previewer/tests/mocks"
 	"image/jpeg"
 	"os"
 	"testing"
+
+	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/require"
 )
 
 //go:generate mockgen -destination=../../../tests/mocks/mock_preview_repository.go -package=mocks image-previewer/internal/domain PreviewRepository
 //go:generate mockgen -destination=../../../tests/mocks/mock_downloader.go -package=mocks image-previewer/internal/domain Downloader
-//go:generate mockgen -destination=../../../tests/mocks/mock_id_resolver.go -package=mocks image-previewer/internal/domain ImageIdResolver
+//go:generate mockgen -destination=../../../tests/mocks/mock_id_resolver.go -package=mocks image-previewer/internal/domain ImageIDResolver
+//nolint:funlen
 func TestImagePreviewQueryHandler_Handle(t *testing.T) {
 	ctrl := gomock.NewController(t)
 
 	t.Run("invalid query width and height", func(t *testing.T) {
 		rep := mocks.NewMockPreviewRepository(ctrl)
-		idResolver := mocks.NewMockImageIdResolver(ctrl)
+		idResolver := mocks.NewMockImageIDResolver(ctrl)
 		downloader := mocks.NewMockDownloader(ctrl)
 
 		handler := NewImagePreviewQueryHandler(rep, downloader, idResolver)
 
 		img, err := handler.Handle(queries.ImagePreviewQuery{
-			Url: "http://ya.ru",
-			Dimensions: valueObjects.ImageDimensions{
-				Width: 0,
+			URL: "http://ya.ru",
+			Dimensions: dto.ImageDimensions{
+				Width:  0,
 				Height: 200,
 			},
 		})
@@ -38,9 +40,9 @@ func TestImagePreviewQueryHandler_Handle(t *testing.T) {
 		require.Equal(t, err, ErrInvalidWidth)
 
 		img, err = handler.Handle(queries.ImagePreviewQuery{
-			Url: "http://ya.ru",
-			Dimensions: valueObjects.ImageDimensions{
-				Width: 100,
+			URL: "http://ya.ru",
+			Dimensions: dto.ImageDimensions{
+				Width:  100,
 				Height: 0,
 			},
 		})
@@ -51,21 +53,21 @@ func TestImagePreviewQueryHandler_Handle(t *testing.T) {
 
 	t.Run("invalid query url", func(t *testing.T) {
 		rep := mocks.NewMockPreviewRepository(ctrl)
-		idResolver := mocks.NewMockImageIdResolver(ctrl)
+		idResolver := mocks.NewMockImageIDResolver(ctrl)
 		downloader := mocks.NewMockDownloader(ctrl)
 
 		handler := NewImagePreviewQueryHandler(rep, downloader, idResolver)
 
 		img, err := handler.Handle(queries.ImagePreviewQuery{
-			Url: "",
-			Dimensions: valueObjects.ImageDimensions{
-				Width: 100,
+			URL: "",
+			Dimensions: dto.ImageDimensions{
+				Width:  100,
 				Height: 100,
 			},
 		})
 
 		require.Nil(t, img)
-		require.Equal(t, err, ErrEmptyUrl)
+		require.Equal(t, err, ErrEmptyURL)
 	})
 
 	t.Run("image found in repository", func(t *testing.T) {
@@ -79,11 +81,11 @@ func TestImagePreviewQueryHandler_Handle(t *testing.T) {
 			Add(gomock.Any(), gomock.Any()).
 			Times(0)
 
-		idResolver := mocks.NewMockImageIdResolver(ctrl)
+		idResolver := mocks.NewMockImageIDResolver(ctrl)
 		idResolver.
 			EXPECT().
-			ResolveImageId(gomock.Any(), gomock.Any()).
-			Return(domain.ImageId("test_id"))
+			ResolveImageID(gomock.Any(), gomock.Any()).
+			Return(domain.ImageID("test_id"))
 
 		downloader := mocks.NewMockDownloader(ctrl)
 		downloader.
@@ -94,9 +96,9 @@ func TestImagePreviewQueryHandler_Handle(t *testing.T) {
 		handler := NewImagePreviewQueryHandler(rep, downloader, idResolver)
 
 		img, err := handler.Handle(queries.ImagePreviewQuery{
-			Url: "http://ya.ru",
-			Dimensions: valueObjects.ImageDimensions{
-				Width: 100,
+			URL: "http://ya.ru",
+			Dimensions: dto.ImageDimensions{
+				Width:  100,
 				Height: 200,
 			},
 		})
@@ -117,11 +119,11 @@ func TestImagePreviewQueryHandler_Handle(t *testing.T) {
 			Return(true, nil).
 			Times(1)
 
-		idResolver := mocks.NewMockImageIdResolver(ctrl)
+		idResolver := mocks.NewMockImageIDResolver(ctrl)
 		idResolver.
 			EXPECT().
-			ResolveImageId(gomock.Any(), gomock.Any()).
-			Return(domain.ImageId("test_id"))
+			ResolveImageID(gomock.Any(), gomock.Any()).
+			Return(domain.ImageID("test_id"))
 
 		actualImg := fakedImg()
 
@@ -135,9 +137,9 @@ func TestImagePreviewQueryHandler_Handle(t *testing.T) {
 		handler := NewImagePreviewQueryHandler(rep, downloader, idResolver)
 
 		img, err := handler.Handle(queries.ImagePreviewQuery{
-			Url: "http://ya.ru",
-			Dimensions: valueObjects.ImageDimensions{
-				Width: 100,
+			URL: "http://ya.ru",
+			Dimensions: dto.ImageDimensions{
+				Width:  100,
 				Height: 200,
 			},
 		})
@@ -146,7 +148,6 @@ func TestImagePreviewQueryHandler_Handle(t *testing.T) {
 		require.NotNil(t, img)
 		require.Same(t, img, actualImg)
 	})
-
 }
 
 func fakedImg() image.Image {
