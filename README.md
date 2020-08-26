@@ -1,7 +1,7 @@
 # Image previewer
 
 ![Continuous Integration](https://github.com/eglebov-otus/final_project/workflows/CI/badge.svg)
-
+[![Go Report Card](https://goreportcard.com/badge/github.com/eglebov-otus/final_project)](https://goreportcard.com/report/github.com/eglebov-otus/final_project)
 
 Try it
 ---
