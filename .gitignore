@@ -1,5 +1,6 @@
-/.idea
+.idea/
 
-/cache
+cache/*
+!cache/.gitkeep
 
 .DS_Store
