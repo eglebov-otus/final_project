@@ -4,6 +4,9 @@ prepare:
 test:
 	@docker build --target unit-test .
 
+test-race:
+	@docker build --target unit-test-race .
+
 lint:
 	@docker build --target lint .
 
