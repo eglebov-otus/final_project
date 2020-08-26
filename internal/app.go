@@ -35,7 +35,7 @@ func (app *App) Run() error {
 
 	rep := repository.NewFileStorage(cacheDir, capacity)
 	idResolver := infrastructure.NewImageIDResolver()
-	httpDownloader := downloader.NewHTTPDownloader(downloader.NewHTTPClient())
+	httpDownloader := downloader.NewHTTPDownloader(downloader.NewHTTPClient(&http.Client{}))
 	queryHandler := handlers.NewImagePreviewQueryHandler(rep, httpDownloader, idResolver)
 	controller := controllers.NewImagePreviewController(queryHandler)
 

@@ -18,31 +18,6 @@ var (
 	ErrSourceHasWrongDimensions = errors.New("source image has wrong dimensions")
 )
 
-type Client interface {
-	Get(rawURL string, headers domain.RequestHeaders) (resp *http.Response, err error)
-}
-
-type HTTPClient struct {
-}
-
-func (c *HTTPClient) Get(rawURL string, headers domain.RequestHeaders) (resp *http.Response, err error) {
-	client := http.Client{}
-
-	//nolint:noctx
-	req, err := http.NewRequest(http.MethodGet, "http://"+rawURL, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header = http.Header(headers)
-
-	return client.Do(req)
-}
-
-func NewHTTPClient() *HTTPClient {
-	return &HTTPClient{}
-}
-
 type HTTPDownloader struct {
 	client Client
 }
