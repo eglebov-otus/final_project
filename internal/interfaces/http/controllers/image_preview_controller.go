@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"image-previewer/internal/application/handlers"
 	"image-previewer/internal/application/queries"
+	"image-previewer/internal/domain"
 	"image-previewer/internal/domain/dto"
 	"image/jpeg"
 	"net/http"
@@ -38,7 +39,7 @@ func (c *ImagePreviewController) ActionGet(w http.ResponseWriter, r *http.Reques
 
 	img, err := c.handler.Handle(queries.ImagePreviewQuery{
 		URL:     vars["url"],
-		Headers: queries.RequestHeaders(r.Header),
+		Headers: domain.RequestHeaders(r.Header),
 		Dimensions: dto.ImageDimensions{
 			Width:  width,
 			Height: height,

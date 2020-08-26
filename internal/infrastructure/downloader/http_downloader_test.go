@@ -22,7 +22,7 @@ func TestHttpDownloader_Download(t *testing.T) {
 		client := mocks.NewMockClient(ctrl)
 		client.
 			EXPECT().
-			Get(gomock.Any()).
+			Get(gomock.Any(), gomock.Any()).
 			Return(&http.Response{
 				StatusCode: http.StatusNotFound,
 				Body:       ioutil.NopCloser(bytes.NewReader(nil)),
@@ -34,6 +34,7 @@ func TestHttpDownloader_Download(t *testing.T) {
 				Width:  0,
 				Height: 0,
 			},
+			nil,
 		)
 
 		require.Nil(t, img)
@@ -46,7 +47,7 @@ func TestHttpDownloader_Download(t *testing.T) {
 		client := mocks.NewMockClient(ctrl)
 		client.
 			EXPECT().
-			Get(gomock.Any()).
+			Get(gomock.Any(), gomock.Any()).
 			Return(&http.Response{
 				StatusCode: http.StatusOK,
 				Body:       ioutil.NopCloser(testFile),
@@ -58,6 +59,7 @@ func TestHttpDownloader_Download(t *testing.T) {
 				Width:  0,
 				Height: 0,
 			},
+			nil,
 		)
 
 		require.Nil(t, img)
@@ -70,7 +72,7 @@ func TestHttpDownloader_Download(t *testing.T) {
 		client := mocks.NewMockClient(ctrl)
 		client.
 			EXPECT().
-			Get(gomock.Any()).
+			Get(gomock.Any(), gomock.Any()).
 			Return(&http.Response{
 				StatusCode: http.StatusOK,
 				Body:       ioutil.NopCloser(testFile),
@@ -82,6 +84,7 @@ func TestHttpDownloader_Download(t *testing.T) {
 				Width:  10000,
 				Height: 20000,
 			},
+			nil,
 		)
 
 		require.Nil(t, img)
@@ -94,7 +97,7 @@ func TestHttpDownloader_Download(t *testing.T) {
 		client := mocks.NewMockClient(ctrl)
 		client.
 			EXPECT().
-			Get(gomock.Any()).
+			Get(gomock.Any(), gomock.Any()).
 			Return(&http.Response{
 				StatusCode: http.StatusOK,
 				Body:       ioutil.NopCloser(testFile),
@@ -106,6 +109,7 @@ func TestHttpDownloader_Download(t *testing.T) {
 				Width:  200,
 				Height: 200,
 			},
+			nil,
 		)
 
 		require.NotNil(t, img)

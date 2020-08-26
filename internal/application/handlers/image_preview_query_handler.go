@@ -38,7 +38,7 @@ func (h *ImagePreviewQueryHandler) Handle(q queries.ImagePreviewQuery) (image.Im
 	if err == ErrNotFound {
 		zap.S().Debug("not found in cache, downloading")
 
-		img, err = h.downloader.Download(q.URL, q.Dimensions)
+		img, err = h.downloader.Download(q.URL, q.Dimensions, q.Headers)
 
 		if err != nil {
 			return nil, err

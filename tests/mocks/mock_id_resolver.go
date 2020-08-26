@@ -5,10 +5,11 @@
 package mocks
 
 import (
-	gomock "github.com/golang/mock/gomock"
 	domain "image-previewer/internal/domain"
 	dto "image-previewer/internal/domain/dto"
 	reflect "reflect"
+
+	gomock "github.com/golang/mock/gomock"
 )
 
 // MockImageIDResolver is a mock of ImageIDResolver interface

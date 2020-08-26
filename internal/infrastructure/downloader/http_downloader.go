@@ -3,6 +3,7 @@ package downloader
 import (
 	"errors"
 	"image"
+	"image-previewer/internal/domain"
 	"image-previewer/internal/domain/dto"
 	"image/jpeg"
 	"net/http"
@@ -18,15 +19,24 @@ var (
 )
 
 type Client interface {
-	Get(url string) (resp *http.Response, err error)
+	Get(rawURL string, headers domain.RequestHeaders) (resp *http.Response, err error)
 }
 
 type HTTPClient struct {
 }
 
-func (c *HTTPClient) Get(url string) (resp *http.Response, err error) {
-	//nolint
-	return http.Get(url)
+func (c *HTTPClient) Get(rawURL string, headers domain.RequestHeaders) (resp *http.Response, err error) {
+	client := http.Client{}
+
+	//nolint:noctx
+	req, err := http.NewRequest(http.MethodGet, "http://"+rawURL, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header = http.Header(headers)
+
+	return client.Do(req)
 }
 
 func NewHTTPClient() *HTTPClient {
@@ -37,8 +47,8 @@ type HTTPDownloader struct {
 	client Client
 }
 
-func (d *HTTPDownloader) Download(url string, dim dto.ImageDimensions) (image.Image, error) {
-	resp, err := d.client.Get("http://" + url)
+func (d *HTTPDownloader) Download(url string, dim dto.ImageDimensions, headers domain.RequestHeaders) (image.Image, error) {
+	resp, err := d.client.Get(url, headers)
 	if err != nil {
 		return nil, err
 	}

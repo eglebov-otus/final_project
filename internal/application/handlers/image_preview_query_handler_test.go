@@ -90,7 +90,7 @@ func TestImagePreviewQueryHandler_Handle(t *testing.T) {
 		downloader := mocks.NewMockDownloader(ctrl)
 		downloader.
 			EXPECT().
-			Download(gomock.Any(), gomock.Any()).
+			Download(gomock.Any(), gomock.Any(), gomock.Any()).
 			Times(0)
 
 		handler := NewImagePreviewQueryHandler(rep, downloader, idResolver)
@@ -130,7 +130,7 @@ func TestImagePreviewQueryHandler_Handle(t *testing.T) {
 		downloader := mocks.NewMockDownloader(ctrl)
 		downloader.
 			EXPECT().
-			Download(gomock.Any(), gomock.Any()).
+			Download(gomock.Any(), gomock.Any(), gomock.Any()).
 			Return(actualImg, nil).
 			Times(1)
 

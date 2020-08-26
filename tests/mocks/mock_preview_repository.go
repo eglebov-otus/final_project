@@ -5,10 +5,11 @@
 package mocks
 
 import (
-	gomock "github.com/golang/mock/gomock"
 	image "image"
 	domain "image-previewer/internal/domain"
 	reflect "reflect"
+
+	gomock "github.com/golang/mock/gomock"
 )
 
 // MockPreviewRepository is a mock of PreviewRepository interface

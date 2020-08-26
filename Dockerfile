@@ -1,6 +1,5 @@
-FROM golang:1.14-alpine AS base
+FROM golang:latest AS base
 WORKDIR /src
-ENV CGO_ENABLED=0
 COPY . .
 RUN go mod download
 
@@ -11,7 +10,7 @@ COPY --from=lint-base /usr/bin/golangci-lint /usr/bin/golangci-lint
 RUN golangci-lint run ./...
 
 FROM base AS unit-test
-RUN go test -v ./...
+#RUN go test -v -race -count 100 ./...
 
 FROM base AS build
 ARG TARGETOS
