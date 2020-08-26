@@ -26,5 +26,7 @@ CMD ["./app"]
 
 # Hack for race
 FROM golang:1.14 AS unit-test-race
-COPY --from=base . .
+WORKDIR /src
+COPY . .
+RUN go mod download
 RUN go test -v -race -count 100 ./...
