@@ -15,7 +15,7 @@ run:
 	@docker run -d -p 8080:8080 --name image-previewer image-previewer:latest
 
 logs:
-	@docker logs -f image-previewer:latest
+	@docker logs -f image-previewer
 
 stop:
 	@docker container stop image-previewer

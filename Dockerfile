@@ -1,4 +1,4 @@
-FROM golang:latest AS base
+FROM golang:1.14 AS base
 WORKDIR /src
 COPY . .
 RUN go mod download
@@ -17,7 +17,7 @@ ARG TARGETOS
 ARG TARGETARCH
 RUN GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build -o /out/app cmd/app/main.go
 
-FROM scratch AS server
+FROM alpine:latest AS server
 COPY --from=build /out/app .
 COPY --from=build /src/configs/config.yml configs/
 COPY --from=build /src/cache cache
