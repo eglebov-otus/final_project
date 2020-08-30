@@ -18,6 +18,6 @@ func TestImageIdResolver_ResolveImageId(t *testing.T) {
 			},
 		)
 
-		require.Equal(t, domain.ImageID("9508dfb97b74094e1b8134e15469fc0e_100x500"), actualID)
+		require.Equal(t, domain.ImageID("1864972448_100x500"), actualID)
 	})
 }

@@ -66,31 +66,6 @@ func TestHttpDownloader_Download(t *testing.T) {
 		require.Error(t, ErrInvalidJpeg, err)
 	})
 
-	t.Run("invalid dimensions", func(t *testing.T) {
-		testFile, _ := os.Open("../../../tests/data/_gopher_original_1024x504.jpg")
-
-		client := mocks.NewMockClient(ctrl)
-		client.
-			EXPECT().
-			Get(gomock.Any(), gomock.Any()).
-			Return(&http.Response{
-				StatusCode: http.StatusOK,
-				Body:       ioutil.NopCloser(testFile),
-			}, nil)
-
-		img, err := NewHTTPDownloader(client).Download(
-			"http://yandex.ru/test.jpg",
-			dto.ImageDimensions{
-				Width:  10000,
-				Height: 20000,
-			},
-			nil,
-		)
-
-		require.Nil(t, img)
-		require.Error(t, ErrSourceHasWrongDimensions, err)
-	})
-
 	t.Run("response should be valid", func(t *testing.T) {
 		testFile, _ := os.Open("../../../tests/data/_gopher_original_1024x504.jpg")
 

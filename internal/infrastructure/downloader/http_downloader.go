@@ -13,9 +13,8 @@ import (
 )
 
 var (
-	ErrResourceUnavailable      = errors.New("image resource unavailable")
-	ErrInvalidJpeg              = errors.New("image should have correct jpeg struct")
-	ErrSourceHasWrongDimensions = errors.New("source image has wrong dimensions")
+	ErrResourceUnavailable = errors.New("image resource unavailable")
+	ErrInvalidJpeg         = errors.New("image should have correct jpeg struct")
 )
 
 type HTTPDownloader struct {
@@ -39,13 +38,7 @@ func (d *HTTPDownloader) Download(url string, dim dto.ImageDimensions, headers d
 		return nil, ErrInvalidJpeg
 	}
 
-	bounds := img.Bounds()
-
-	if bounds.Dx() < dim.Width || bounds.Dy() < dim.Height {
-		return nil, ErrSourceHasWrongDimensions
-	}
-
-	zap.S().Debugf("crop downloaded image %d x %d", dim.Width, dim.Height)
+	zap.S().Debugf("resizing downloaded image %d x %d", dim.Width, dim.Height)
 
 	return imaging.Fill(img, dim.Width, dim.Height, imaging.Center, imaging.Lanczos), nil
 }
